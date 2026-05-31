@@ -7,18 +7,21 @@ require('dotenv').config();
 var app = express();
 
 app.use(cors());
+
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-// Configuración de multer
+// Multer configuration
 const upload = multer({
-  storage: multer.memoryStorage()
+  dest: 'uploads/'
 });
 
-app.post('/api/fileanalyse', upload.single('upfile'), function(req, res) {
+app.post('/api/fileanalyse', upload.single('upfile'), function (req, res) {
+
+  console.log(req.file);
 
   res.json({
     name: req.file.originalname,
@@ -29,6 +32,8 @@ app.post('/api/fileanalyse', upload.single('upfile'), function(req, res) {
 });
 
 const port = process.env.PORT || 3000;
+
+console.log("VERSION NUEVA 31-05-2026");
 
 app.listen(port, function () {
   console.log('Your app is listening on port ' + port);
