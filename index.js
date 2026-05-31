@@ -14,26 +14,32 @@ app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-// Multer configuration
-const upload = multer({
-  dest: 'uploads/'
-});
+// Multer sin storage ni dest
+const upload = multer();
 
-app.post('/api/fileanalyse', upload.single('upfile'), function (req, res) {
+app.post('/api/fileanalyse', upload.any(), function (req, res) {
 
-  console.log(req.file);
+  const file = req.files[0];
+
+  if (!file) {
+    return res.status(400).json({
+      error: 'No file uploaded'
+    });
+  }
+
+  console.log(file);
 
   res.json({
-    name: req.file.originalname,
-    type: req.file.mimetype,
-    size: req.file.size
+    name: file.originalname,
+    type: file.mimetype,
+    size: file.size
   });
 
 });
 
 const port = process.env.PORT || 3000;
 
-console.log("VERSION NUEVA 31-05-2026");
+console.log("VERSION MULTER ANY");
 
 app.listen(port, function () {
   console.log('Your app is listening on port ' + port);
