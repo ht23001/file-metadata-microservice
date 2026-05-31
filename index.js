@@ -18,14 +18,7 @@ const upload = multer({
   storage: multer.memoryStorage()
 });
 
-// Ruta requerida por el proyecto
-app.post('/api/fileanalyse', upload.single('upfile'), function (req, res) {
-
-  if (!req.file) {
-    return res.status(400).json({
-      error: 'No file uploaded'
-    });
-  }
+app.post('/api/fileanalyse', upload.single('upfile'), function(req, res) {
 
   res.json({
     name: req.file.originalname,
