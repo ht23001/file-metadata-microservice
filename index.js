@@ -13,20 +13,24 @@ app.get('/', function (req, res) {
 
 const upload = multer();
 
-app.post('/api/fileanalyse', (req, res, next) => {
-  console.log('=== POST /api/fileanalyse recibido ===');
-  console.log('content-type:', req.headers['content-type']);
-  console.log('headers completos:', JSON.stringify(req.headers));
-  next();
-}, upload.single('upfile'), function (req, res) {
+app.post('/api/fileanalyse', upload.any(), function (req, res) {
+  console.log('=== POST recibido ===');
+  console.log('headers:', JSON.stringify(req.headers));
   console.log('req.file:', req.file);
-  console.log('req.files:', req.files);
+  console.log('req.files:', JSON.stringify(req.files ? req.files.map(f => ({
+    fieldname: f.fieldname,
+    originalname: f.originalname,
+    mimetype: f.mimetype,
+    size: f.size
+  })) : null));
+
+  const file = req.file || (req.files && req.files[0]);
   
-  const file = req.file;
   if (!file) {
-    console.log('ERROR: No se encontro archivo');
+    console.log('ERROR: sin archivo');
     return res.status(400).json({ error: 'No file uploaded' });
   }
+
   res.json({
     name: file.originalname,
     type: file.mimetype,
